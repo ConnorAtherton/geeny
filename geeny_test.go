@@ -34,10 +34,11 @@ var geenyTests = []struct {
 	},
 	{
 		"single flags with number",
-		[]string{"tool", "-c3"},
+		[]string{"tool", "-c3", "-n10"},
 		[]string{"tool"},
 		map[string]interface{}{
 			"c": 3,
+			"n": 10,
 		},
 	},
 }
@@ -88,7 +89,7 @@ func optionsAreSame(a options, b options) bool {
 	}
 
 	for key, val := range a {
-		if res, ok := b[key]; !ok || val != res {
+		if res, ok := b[key]; !ok || (val != res) {
 			return false
 		}
 	}

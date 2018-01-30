@@ -40,12 +40,12 @@ func Parse(args []string) (*Args, error) {
 		}
 
 		if singleDash.MatchString(val) {
-			chars := []byte(val)
+			chars := []rune(val[1:])
 			length := len(chars)
 
-			for i, letter := range chars[1:] {
-				if i+1 < length && unicode.IsNumber(rune(chars[i+1])) {
-					opts[string(letter)] = chars[i+1]
+			for i, letter := range chars {
+				if i+1 < length && unicode.IsDigit(chars[i+1]) {
+					opts[string(letter)] = int(chars[i+1]) - '0'
 					shouldSkip = true
 					break
 				} else {
