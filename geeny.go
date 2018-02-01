@@ -2,6 +2,7 @@ package geeny
 
 import (
 	"regexp"
+	"strconv"
 	"unicode"
 )
 
@@ -15,9 +16,9 @@ type Args struct {
 
 var (
 	command            = regexp.MustCompile(`^[A-Za-z]`)
-	singleDash         = regexp.MustCompile(`^-.+`)
-	doubleDash         = regexp.MustCompile(`^--.+`)
-	doubleDashNegation = regexp.MustCompile(`^--no-.+`)
+	singleDash         = regexp.MustCompile(`^-([A-Za-z])+`)
+	doubleDash         = regexp.MustCompile(`^--([A-Za-z]*-?[A-Za-z]*)=?([A-Za-z0-9]*)`)
+	doubleDashNegation = regexp.MustCompile(`^--no-([A-Za-z]*-?[A-Za-z]*)`)
 )
 
 func Parse(args []string) (*Args, error) {
@@ -50,6 +51,30 @@ func Parse(args []string) (*Args, error) {
 					break
 				} else {
 					opts[string(letter)] = true
+				}
+			}
+
+			continue
+		}
+
+		if doubleDashNegation.MatchString(val) {
+			match := doubleDashNegation.FindStringSubmatch(val)
+
+			opts[match[1]] = false
+
+			continue
+		}
+
+		if doubleDash.MatchString(val) {
+			match := doubleDash.FindStringSubmatch(val)
+
+			if len(match) == 3 && match[2] == "" {
+				opts[match[1]] = true
+			} else {
+				if intVal, err := strconv.Atoi(match[2]); err == nil {
+					opts[match[1]] = intVal
+				} else {
+					opts[match[1]] = match[2]
 				}
 			}
 		}

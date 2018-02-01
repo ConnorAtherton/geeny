@@ -32,13 +32,46 @@ var geenyTests = []struct {
 			"b": true,
 		},
 	},
+	//
+	// TODO
+	//
+	// {
+	// 	"single flags with number",
+	// 	[]string{"tool", "-c3", "-n10"},
+	// 	[]string{"tool"},
+	// 	map[string]interface{}{
+	// 		"c": 3,
+	// 		"n": 10,
+	// 	},
+	// },
 	{
-		"single flags with number",
-		[]string{"tool", "-c3", "-n10"},
+		"double dash negation",
+		[]string{"tool", "--no-change", "--no-complex-value"},
 		[]string{"tool"},
 		map[string]interface{}{
-			"c": 3,
-			"n": 10,
+			"change":        false,
+			"complex-value": false,
+		},
+	},
+	{
+		"double dash",
+		[]string{"tool", "--change", "--value=3", "--complex-value=something"},
+		[]string{"tool"},
+		map[string]interface{}{
+			"change":        true,
+			"value":         3,
+			"complex-value": "something",
+		},
+	},
+	{
+		"mixed complex",
+		[]string{"tool", "get", "--change", "--value=3", "--no-req", "-v"},
+		[]string{"tool", "get"},
+		map[string]interface{}{
+			"change": true,
+			"value":  3,
+			"req":    false,
+			"v":      true,
 		},
 	},
 }
